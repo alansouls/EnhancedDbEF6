@@ -14,24 +14,24 @@ using System.Threading.Tasks;
 
 namespace FastUpsertEF.Set
 {
-    public class EnhancedSet<TEntity> where TEntity : class
+    public class EnhancedSet<TEntity> : IEnhancedSet<TEntity>, IOperationSet where TEntity : class
     {
         private readonly EnhanceDb enhanceDb;
-        private List<KeyValuePair<Type, DataTable>> upsertOperations;
+        public List<KeyValuePair<Type, DataTable>> UpsertOperations { get; private set; }
         private readonly DbSet<TEntity> normalSet;
 
         public EnhancedSet(EnhanceDb enhanceDb, DbSet<TEntity> contextSet)
         {
             this.enhanceDb = enhanceDb;
             normalSet = contextSet;
-            upsertOperations = new List<KeyValuePair<Type, DataTable>>();
+            UpsertOperations = new List<KeyValuePair<Type, DataTable>>();
         }
 
         public void Upsert(IEnumerable<TEntity> entities)
         {
             //TODO: Modify normal set
             //TODO: Mount upsertOperations list acording to normal set
-            upsertOperations.Add(new KeyValuePair<Type, DataTable>(typeof(TEntity), EntitiesToDataTable(entities)));
+            UpsertOperations.Add(new KeyValuePair<Type, DataTable>(typeof(TEntity), EntitiesToDataTable(entities)));
         }
 
         public DbSet<TEntity> NormalSet() => normalSet;
